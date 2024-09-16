@@ -1,0 +1,106 @@
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Task 6</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script type="application/javascript">
+
+            function createFamilyTree() {
+                $('body').append('<table><thead><th>Firstname</th><th>Lastname</th></thead></table>');
+                $('table').append('<tbody></tbody>');
+            }
+
+            /**
+             * Creates a new tr element with 3 td children:
+             * the first one contains the string in 'firstName',
+             * the second one contains the string in 'lastName',
+             * and the third one is an (x) button with orange background color
+             * that deletes the row when clicked.
+             *
+             * This function then PREPENDS the new tr element
+             * to "$('tbody')" if 'position' === 'before',
+             * otherwise it APPENDS it to "$('tbody')".
+             *
+             * @param firstName {string}
+             * @param lastName {string}
+             * @param position {string} should be 'before'
+             * to prepend new member,
+             * or anything to append new member.
+             */
+            function addNewMember(firstName, lastName, position) {
+                const newMember = $('<tr></tr>');
+
+                newMember.append('<td>' + firstName + '</td>');
+                newMember.append('<td>' + lastName + '</td>');
+
+                const newMemberXButton = $('<td>(x)</td>');
+                newMemberXButton.css('background-color', 'orange');
+                newMemberXButton.on(
+                    'click',
+                    function () {
+                        $(this).parent().remove();
+                    }
+                );
+
+                newMember.append(newMemberXButton);
+
+                if (position === 'before') {
+                    $('tbody').prepend(newMember);
+                } else {
+                    $('tbody').append(newMember);
+                }
+            }
+
+            /**
+             * Adds 'first name' and 'last name' text entries,
+             * a choice between 'before' and 'after', and a submit button;
+             * right before the Firstname-Lastname table.
+             * 
+             * This function sets up an event listener that
+             * adds the new names into the table,
+             * APPENDING it if the chosen option was after,
+             * and PREPENDING it if the chosen option was before.
+             */
+            function createForm() {
+                const table = $('table');
+
+                table.before(
+                    '<input name="first name" type="text" aria-required="true">'
+                );
+                table.before(
+                    '<input name="last name" type="text" aria-required="true">'
+                );
+
+                const formSelect = $('<select name="position"></select>');
+
+                formSelect.append('<option value="before">Before</option>');
+                formSelect.append('<option value="after">After</option>');
+
+                table.before(formSelect);
+
+                const submitButton = $('<input type="submit">');
+
+                submitButton.click(
+                    function () {
+                        const firstName = $('input:first-of-type').val();
+                        const lastName = $('input:nth-of-type(2)').val();
+                        const position = $('select').val();
+
+                        const formResults = $('form').serializeArray();
+
+                        addNewMember(firstName, lastName, position);
+                    }
+                );
+                table.before(submitButton);
+            }
+
+            $(document).ready(
+                function () {
+                    createFamilyTree();
+                    createForm();
+                }
+            );
+        </script>
+    </head>
+    <body></body>
+</html>
